@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Helpdesk.Models;
 
 namespace Helpdesk
 {
@@ -21,7 +23,13 @@ namespace Helpdesk
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllersWithViews();
+            // https://stackoverflow.com/questions/57912012/net-core-3-upgrade-cors-and-jsoncycle-xmlhttprequest-error
+            services.AddControllersWithViews().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+            var connection = "server=localhost;port=3306;database=HelpDesk;user=root;password=Boe3i/W=R1e9";
+            services.AddDbContext<HelpDeskContext>(options => options
+                .UseMySql(connection));
+            // Configuration.GetConnectionString("DefaultConnection")
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
