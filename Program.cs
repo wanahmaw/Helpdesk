@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Helpdesk.Models;
 
 namespace Helpdesk
 {
@@ -14,6 +15,15 @@ namespace Helpdesk
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
+            /*
+            // Test database works with list of users
+            var dbContext = new HelpDeskContext();
+            var users = dbContext.User.ToList();
+            foreach (var user in users)
+            {
+                Console.WriteLine($"ID:{user.Id} Username:{user.UserName}");
+            }
+            */
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
