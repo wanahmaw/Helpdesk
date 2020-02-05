@@ -9,6 +9,7 @@ using Helpdesk.Models;
 
 namespace Helpdesk.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class TicketController : ControllerBase
@@ -29,16 +30,22 @@ namespace Helpdesk.Controllers
 
         // GET: api/Ticket/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Ticket>> GetTicket(int id)
+        public async Task<ActionResult<TicketOnly>> GetTicket(int id)
         {
+            // Declare DB variables
+            var tickets = _context.Ticket;
+            var userTickets = _context.UserTickets;
+            var users = _context.User;
+
+            // Verify ticket exists
             var ticket = await _context.Ticket.FindAsync(id);
-
             if (ticket == null)
-            {
                 return NotFound();
-            }
 
-            return ticket;
+            // Create response for front end
+            var response = Factory.CreateTicketFromId(id, tickets, userTickets, users);
+
+            return response;
         }
 
         // PUT: api/Ticket/5
