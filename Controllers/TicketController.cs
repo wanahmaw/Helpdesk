@@ -30,23 +30,38 @@ namespace Helpdesk.Controllers
 
         // GET: api/Ticket/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TicketOnly>> GetTicket(int id)
+        public async Task<ActionResult<TicketInfo>> GetTicket(int id)
         {
-            // Declare DB variables
-            var tickets = _context.Ticket;
-            var userTickets = _context.UserTickets;
-            var users = _context.User;
-
             // Verify ticket exists
             var ticket = await _context.Ticket.FindAsync(id);
             if (ticket == null)
-                return NotFound();
+            {
+                return NotFound("User not found");
+            }
 
             // Create response for front end
-            var response = Factory.CreateTicketFromId(id, tickets, userTickets, users);
+            var ticketFromId = Factory.GetTicketFromId(id, _context);
 
-            return response;
+            return ticketFromId;
         }
+
+        // GET: api/Ticket/User/5
+        [HttpGet("user/{id}")]
+        public async Task<ActionResult<IEnumerable<TicketInfo>>> GetTicketUser(int id)
+        {
+            // Verify user exists
+            var user = await _context.User.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            // Create response for front end
+            var ticketsFromUser = Factory.GetTicketsFromUser(id, _context);
+
+            return ticketsFromUser.ToList();
+        }
+
 
         // PUT: api/Ticket/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
@@ -84,10 +99,18 @@ namespace Helpdesk.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Ticket>> PostTicket(Ticket ticket)
+        public async Task<ActionResult<Ticket>> PostTicket(TicketForm ticketForm)
         {
-            _context.Ticket.Add(ticket);
-            await _context.SaveChangesAsync();
+            // Verify user
+            int userId = ticketForm.OwnerId;
+            bool userExists = _context.User.Any(e => e.Id == userId);
+            if (userExists == false)
+            {
+                return NotFound("User not found");
+            }
+
+            // Factory to create ticket
+            var ticket = await Factory.CreateTicket(ticketForm, _context);
 
             return CreatedAtAction("GetTicket", new { id = ticket.Id }, ticket);
         }

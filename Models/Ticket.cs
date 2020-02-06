@@ -17,11 +17,19 @@ namespace Helpdesk.Models
         public virtual ICollection<UserTickets> UserTickets { get; set; }
     }
 
-    public partial class TicketOnly
+    public partial class TicketInfo
     {
         public int TicketId { get; set; }
         public int OwnerId { get; set; }
         public string OwnerName { get; set; }
+        public string Title { get; set; }
+        public string Content { get; set; }
+    }
+
+    public partial class TicketForm
+    {
+        public int TicketId { get; set; }
+        public int OwnerId { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
     }
