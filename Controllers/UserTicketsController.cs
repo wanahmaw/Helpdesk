@@ -101,9 +101,9 @@ namespace Helpdesk.Controllers
 
         // DELETE: api/UserTickets/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<UserTickets>> DeleteUserTickets(int id)
+        public async Task<ActionResult<UserTickets>> DeleteUserTicketAssociation(int id)
         {
-            var userTickets = await _context.UserTickets.FindAsync(id);
+            var userTickets = await _context.UserTickets.FirstOrDefaultAsync(t => t.TicketId == id);
             if (userTickets == null)
             {
                 return NotFound();

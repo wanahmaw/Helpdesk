@@ -101,7 +101,7 @@ namespace Helpdesk.Controllers
             return user;
         }
 
-        private bool UserExists(int id)
+        public bool UserExists(int id)
         {
             return _context.User.Any(e => e.Id == id);
         }

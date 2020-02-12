@@ -70,18 +70,21 @@ namespace Helpdesk.Controllers
             _context.Ticket.Add(ticket);
             await _context.SaveChangesAsync();
 
+            return ticket;
+        }
+
+        public static void CreateTicketUserAssociation(int userId, int ticketId, HelpDeskContext _context)
+        {
             // Create association with user
             UserTickets userTicket = new UserTickets()
             {
-                UserId = ticketForm.OwnerId,
-                TicketId = ticket.Id
+                UserId = userId,
+                TicketId = ticketId
             };
 
             // Add association to database
             _context.UserTickets.Add(userTicket);
-            await _context.SaveChangesAsync();
-
-            return ticket;
+            _context.SaveChanges();
         }
     }
 }

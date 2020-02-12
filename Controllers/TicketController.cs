@@ -109,8 +109,14 @@ namespace Helpdesk.Controllers
                 return NotFound("User not found");
             }
 
-            // Factory to create ticket
+            // Create ticket
             var ticket = await Factory.CreateTicket(ticketForm, _context);
+
+            // Create ticket & user association
+            if (ticket.Id > 0)
+            {
+                Factory.CreateTicketUserAssociation(userId, ticket.Id, _context);
+            }
 
             return CreatedAtAction("GetTicket", new { id = ticket.Id }, ticket);
         }
@@ -119,14 +125,20 @@ namespace Helpdesk.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Ticket>> DeleteTicket(int id)
         {
+            // Verify ticket
             var ticket = await _context.Ticket.FindAsync(id);
             if (ticket == null)
             {
                 return NotFound();
             }
 
+            // Remove ticket
             _context.Ticket.Remove(ticket);
             await _context.SaveChangesAsync();
+
+            // Remove associated user relation
+            var controller = new UserTicketsController(_context);
+            var relation = await controller.DeleteUserTicketAssociation(id);
 
             return ticket;
         }
