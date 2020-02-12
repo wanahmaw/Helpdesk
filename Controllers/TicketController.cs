@@ -36,7 +36,7 @@ namespace Helpdesk.Controllers
             var ticket = await _context.Ticket.FindAsync(id);
             if (ticket == null)
             {
-                return NotFound("User not found");
+                return NotFound("Ticket not found");
             }
 
             // Create response for front end
@@ -132,13 +132,13 @@ namespace Helpdesk.Controllers
                 return NotFound();
             }
 
-            // Remove ticket
-            _context.Ticket.Remove(ticket);
-            await _context.SaveChangesAsync();
-
             // Remove associated user relation
             var controller = new UserTicketsController(_context);
             var relation = await controller.DeleteUserTicketAssociation(id);
+
+            // Remove ticket
+            _context.Ticket.Remove(ticket);
+            await _context.SaveChangesAsync();
 
             return ticket;
         }

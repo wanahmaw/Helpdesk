@@ -86,5 +86,36 @@ namespace Helpdesk.Controllers
             _context.UserTickets.Add(userTicket);
             _context.SaveChanges();
         }
+
+        public static async Task<User> CreateUser(Login login, string hashedPw, HelpDeskContext _context)
+        {
+            // Create new user object
+            User newUser = new User()
+            {
+                UserName = login.UserName,
+                UserPassword = hashedPw
+            };
+
+            // Add user to database
+            _context.User.Add(newUser);
+            await _context.SaveChangesAsync();
+
+            return newUser;
+        }
+
+        public static async Task<UserRoles> CreateUserRoleAssociation(int newUserId, int roleId, HelpDeskContext _context)
+        {
+            UserRoles newUserRole = new UserRoles()
+            {
+                UserId = newUserId,
+                RoleId = roleId
+            };
+
+            // Add user role to database
+            _context.UserRoles.Add(newUserRole);
+            await _context.SaveChangesAsync();
+
+            return newUserRole;
+        }
     }
 }

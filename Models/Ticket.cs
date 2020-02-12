@@ -28,7 +28,6 @@ namespace Helpdesk.Models
 
     public partial class TicketForm
     {
-        public int TicketId { get; set; }
         public int OwnerId { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
