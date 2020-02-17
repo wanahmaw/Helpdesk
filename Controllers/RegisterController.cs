@@ -26,7 +26,7 @@ namespace Helpdesk.Controllers
         [HttpPost]
         public async Task<ActionResult<Identity>> PostRegister(Login login)
         {
-            // Stop registering if already in database
+            // Very user doesn't exist
             var existingUser = await _context.User.FirstOrDefaultAsync(u => u.UserName == login.UserName);
             if (existingUser != null)
             {
@@ -36,14 +36,16 @@ namespace Helpdesk.Controllers
             // Hash the password from register form in client
             string hashedPw = Crypto.HashPassword(login.Password);
 
-            // Create new user
+            // Create user
             User newUser = await Factory.CreateUser(login, hashedPw, _context);
 
-            // Create new user role
-            // 1 is for normal users
+            // Create user role. 1 = USER, 2 = TEAM MEMBER
             UserRoles newUserRole = await Factory.CreateUserRoleAssociation(newUser.Id, 1, _context);
 
-            return CreatedAtAction("GetUser", new { id = newUser.Id }, newUser);
+            // Create identity for front-end
+            Identity identity = Factory.CreateIdentity(newUser.Id, _context);
+
+            return CreatedAtAction("PostRegister", identity);
         }
     }
 }

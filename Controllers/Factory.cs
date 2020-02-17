@@ -14,9 +14,7 @@ namespace Helpdesk.Controllers
         public static TicketInfo GetTicketFromId(int ticketId, HelpDeskContext _context)
         {
             // Declare database entities
-            var tickets = _context.Ticket;
             var userTickets = _context.UserTickets;
-            var users = _context.User;
 
             // Query for a ticket Info response
             var res =
@@ -116,6 +114,25 @@ namespace Helpdesk.Controllers
             await _context.SaveChangesAsync();
 
             return newUserRole;
+        }
+
+        public static Identity CreateIdentity(int userId, HelpDeskContext _context)
+        {
+
+            var userRoles = _context.UserRoles;
+
+            // Query for identity
+            var res =
+                from u in userRoles
+                where u.UserId == userId
+                select new Identity()
+                {
+                    UserName = u.User.UserName,
+                    UserId = userId,
+                    RoleId = u.RoleId
+                };
+
+            return res.FirstOrDefault();
         }
     }
 }
