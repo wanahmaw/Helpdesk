@@ -101,12 +101,12 @@ namespace Helpdesk.Controllers
             return newUser;
         }
 
-        public static async Task<UserRoles> CreateUserRoleAssociation(int newUserId, int roleId, HelpDeskContext _context)
+        public static async Task<UserRoles> CreateUserRoleAssociation(int newUserId, RoleTitle roleId, HelpDeskContext _context)
         {
             UserRoles newUserRole = new UserRoles()
             {
                 UserId = newUserId,
-                RoleId = roleId
+                RoleId = (int)roleId
             };
 
             // Add user role to database

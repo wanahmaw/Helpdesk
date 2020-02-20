@@ -16,9 +16,9 @@ namespace Helpdesk.Models
         public virtual ICollection<UserRoles> UserRoles { get; set; }
     }
 
-    public static class RoleTitle
+    public enum RoleTitle
     {
-        public const string Team = "Team";
-        public const string User = "User";
+        User = 1,
+        Team
     }
 }
