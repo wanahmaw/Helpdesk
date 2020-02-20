@@ -128,6 +128,7 @@ namespace Helpdesk.Controllers
                 select new Identity()
                 {
                     UserName = u.User.UserName,
+                    RoleName = u.Role.Title,
                     UserId = userId,
                     RoleId = u.RoleId
                 };

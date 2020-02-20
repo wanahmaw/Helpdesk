@@ -5,24 +5,29 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using Helpdesk.Models;
+using Helpdesk.Services;
 using CryptoHelper;
 
 namespace Helpdesk.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-
     public class LoginController : ControllerBase
     {
         private readonly HelpDeskContext _context;
+        private readonly ILoginService _userService;
 
-        public LoginController(HelpDeskContext context)
+        public LoginController(HelpDeskContext context, ILoginService userService)
         {
             _context = context;
+            _userService = userService;
         }
 
         // TODO: Fix login
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<Identity>> PostLogin(Login login)
         {
@@ -44,8 +49,11 @@ namespace Helpdesk.Controllers
                 return Unauthorized("Invalid password");
             }
 
-            // Create identity for front-end
+            // Create identity
             Identity identity = Factory.CreateIdentity(user.Id, _context);
+
+            // Append token to identity
+            _userService.CreateToken(ref identity);
 
             return CreatedAtAction("PostLogin", identity);
         }

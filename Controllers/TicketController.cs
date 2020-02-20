@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using Helpdesk.Models;
 
 namespace Helpdesk.Controllers
 {
 
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TicketController : ControllerBase
@@ -22,6 +24,7 @@ namespace Helpdesk.Controllers
         }
 
         // GET: api/Ticket
+        [Authorize(Roles = "team")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Ticket>>> GetTicket()
         {
@@ -42,6 +45,13 @@ namespace Helpdesk.Controllers
             // Create response for front end
             var ticketFromId = Factory.GetTicketFromId(id, _context);
 
+            // Verify user can only retrieve their tickets
+            var currentUserId = int.Parse(User.Identity.Name);
+            if (ticketFromId.OwnerId != currentUserId && !User.IsInRole("team"))
+            {
+                return Forbid();
+            }
+
             return ticketFromId;
         }
 
@@ -49,6 +59,13 @@ namespace Helpdesk.Controllers
         [HttpGet("user/{id}")]
         public async Task<ActionResult<IEnumerable<TicketInfo>>> GetTicketUser(int id)
         {
+            // Only allow team to access other user tickets
+            var currentUserId = int.Parse(User.Identity.Name);
+            if (id != currentUserId && !User.IsInRole("team"))
+            {
+                return Forbid();
+            }
+
             // Verify user exists
             var user = await _context.User.FindAsync(id);
             if (user == null)
@@ -122,6 +139,7 @@ namespace Helpdesk.Controllers
         }
 
         // DELETE: api/Ticket/5
+        [Authorize(Roles = "team")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Ticket>> DeleteTicket(int id)
         {
