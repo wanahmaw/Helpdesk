@@ -26,9 +26,10 @@ namespace Helpdesk.Controllers
         // GET: api/Ticket
         [Authorize(Roles = "team")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Ticket>>> GetTicket()
+        public async Task<ActionResult<IEnumerable<TicketInfo>>> GetTicket()
         {
-            return await _context.Ticket.ToListAsync();
+            var tickets = await Factory.GetAllTickets(_context);
+            return tickets.ToList();
         }
 
         // GET: api/Ticket/5

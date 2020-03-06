@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route } from "react-router-dom";
 import { Layout } from "./components/Layout";
-import { Home } from "./components/Home";
+import { Dashboard } from "./components/Dashboard";
 import { FetchData } from "./components/FetchData";
 import { Counter } from "./components/Counter";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -17,6 +17,7 @@ class App extends Component {
       <BrowserRouter>
         <Layout>
           <Route exact path="/" component={Login} />
+          <ProtectedRoute path="/dashboard" component={Dashboard} />
           <ProtectedRoute path="/counter" component={Counter} />
           <ProtectedRoute path="/fetch-data" component={FetchData} />
         </Layout>

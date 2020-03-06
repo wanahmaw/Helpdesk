@@ -9,6 +9,24 @@ const getCurrentUser = () => {
   return null;
 };
 
+// Get current user's role
+const getUserRole = () => {
+  const user = getCurrentUser();
+  if (user && user.token && user.roleId) {
+    return user.roleId;
+  }
+  return null;
+};
+
+// Get current user ID
+const getUserId = () => {
+  const user = getCurrentUser();
+  if (user && user.token && user.userId) {
+    return user.userId;
+  }
+  return null;
+};
+
 // Login user
 const login = (username: string, password: string) => {
   return (
@@ -27,7 +45,6 @@ const login = (username: string, password: string) => {
       .catch(err => {
         console.log(err);
         alert("Invalid, please try again");
-        return null;
       })
   );
 };
@@ -38,9 +55,22 @@ const logout = () => {
   alert("removed user!");
 };
 
+// Get authorization header for authorized routes in back-end
+const getAuthHeader = () => {
+  const user = getCurrentUser();
+  if (user && user.token) {
+    return { Authorization: `Bearer ${user.token}` };
+  } else {
+    return {};
+  }
+};
+
 // Append authentication label to functions
 export const authentication = {
   getCurrentUser,
   login,
-  logout
+  logout,
+  getAuthHeader,
+  getUserRole,
+  getUserId
 };

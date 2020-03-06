@@ -11,6 +11,27 @@ namespace Helpdesk.Controllers
 {
     public static class Factory
     {
+        public static async Task<IEnumerable<TicketInfo>> GetAllTickets(HelpDeskContext _context)
+        {
+            // Declare database entities
+            var tickets = _context.Ticket;
+            var userTickets = _context.UserTickets;
+            var users = _context.User;
+
+            // Query for all tickets
+            var res =
+                from u in userTickets
+                select new TicketInfo()
+                {
+                    TicketId = u.TicketId,
+                    OwnerId = u.UserId,
+                    Title = u.Ticket.Title,
+                    Content = u.Ticket.Content,
+                    OwnerName = u.User.UserName
+                };
+
+            return await res.ToListAsync();
+        }
         public static TicketInfo GetTicketFromId(int ticketId, HelpDeskContext _context)
         {
             // Declare database entities
@@ -26,7 +47,7 @@ namespace Helpdesk.Controllers
                     OwnerId = u.User.Id,
                     Title = u.Ticket.Title,
                     Content = u.Ticket.Content,
-                    OwnerName = u.User.UserName,
+                    OwnerName = u.User.UserName
                 };
 
             return res.FirstOrDefault();
@@ -49,7 +70,7 @@ namespace Helpdesk.Controllers
                     OwnerId = u.User.Id,
                     Title = u.Ticket.Title,
                     Content = u.Ticket.Content,
-                    OwnerName = u.User.UserName,
+                    OwnerName = u.User.UserName
                 };
 
             return res.ToList();

@@ -2,7 +2,6 @@ import React from "react";
 import { History } from "history";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import Axios from "axios";
 import { authentication } from "../../services/Authentication";
 
 interface IProps {
@@ -36,7 +35,6 @@ const LoginForm = (props: IProps) => {
         }
       });
 
-      // Finalize form after submitting
       actions.setSubmitting(false);
       actions.resetForm({});
     }
