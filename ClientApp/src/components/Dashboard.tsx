@@ -4,17 +4,16 @@ import TicketSnippet from "./tickets/TicketSnippet";
 import { Link } from "react-router-dom";
 import { ticketing } from "../services/Ticketing";
 
-interface ITicketState {
-  // FIXME: match scheme and interface
+interface State {
+  // TODO: match scheme and interface
   tickets: any;
 }
 
-interface IUserProp {
-  user: any;
+interface Props {
   history: History;
 }
 
-export class Dashboard extends Component<IUserProp, ITicketState> {
+export class Dashboard extends Component<Props, State> {
   constructor(props: any) {
     super(props);
 
@@ -33,8 +32,7 @@ export class Dashboard extends Component<IUserProp, ITicketState> {
   }
 
   renderTicketSnippets() {
-    // TODO: first verify user
-    // display ticket snippets when available
+    // Display snippets when available
     if (this.state.tickets && this.state.tickets.length > 0) {
       return this.state.tickets.map((ticket: any) => (
         <ul key={ticket.ticketId}>
@@ -43,6 +41,7 @@ export class Dashboard extends Component<IUserProp, ITicketState> {
       ));
     }
 
+    // Show this when there's nothing to display or loading takes a while
     return (
       <li className="collection-item">
         <h3>No tickets to display</h3>

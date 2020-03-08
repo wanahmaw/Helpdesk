@@ -1,7 +1,8 @@
 import Axios from "axios";
 import { authentication } from "./Authentication";
 
-const getSnippet = async (ticketId: number) => {
+// TODO: Remove? Not really used
+const getTicket = async (ticketId: number) => {
   const url = `/api/ticket/${ticketId}`;
   // Get snippet
   const snippet = await Axios.get(url, {
@@ -30,7 +31,23 @@ const getTicketsByRole = async () => {
   }
 };
 
+const deleteTicket = async (ticketId: number) => {
+  // Get role
+  const roleId = authentication.getUserRole();
+  const url = `/api/ticket/${ticketId}`;
+  if (roleId == 2) {
+    Axios.delete(url, {
+      headers: authentication.getAuthHeader()
+    }).then(data => {
+      if (data && data.status == 200) {
+        return data;
+      }
+    });
+  }
+};
+
 export const ticketing = {
-  getSnippet,
-  getTicketsByRole
+  getTicket,
+  getTicketsByRole,
+  deleteTicket
 };

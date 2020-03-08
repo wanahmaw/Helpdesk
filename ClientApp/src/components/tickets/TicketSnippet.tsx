@@ -17,7 +17,7 @@ class TicketSnippet extends Component<IProps> {
             to={{
               pathname: `/ticket/${ticket.ticketId}`,
               state: {
-                ticket
+                ticket: this.props.ticket
               }
             }}
           >
