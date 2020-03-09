@@ -31,7 +31,7 @@ const LoginForm = (props: IProps) => {
     onSubmit: (values, actions) => {
       authentication.login(values.username, values.password).then(user => {
         if (user) {
-          props.history.push("/counter");
+          props.history.push("/dashboard");
         }
       });
 
