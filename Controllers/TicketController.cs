@@ -84,13 +84,26 @@ namespace Helpdesk.Controllers
         // PUT: api/Ticket/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTicket(int id, Ticket ticket)
+        [HttpPut("{ticketId}")]
+        public async Task<IActionResult> PutTicket([FromRoute]int ticketId, TicketForm ticketForm)
         {
-            if (id != ticket.Id)
+            // Only owner or team member can update tickets
+            var currentUserId = int.Parse(User.Identity.Name);
+            if (ticketForm.OwnerId != currentUserId && !User.IsInRole("team"))
             {
-                return BadRequest();
+                return Forbid();
             }
+
+            // Receive ticket id from url
+            var ticket = await _context.Ticket.FindAsync(ticketId);
+            if (ticket == null)
+            {
+                return NotFound("Ticket not found");
+            }
+
+            // Modify ticket
+            ticket.Title = ticketForm.Title;
+            ticket.Content = ticketForm.Content;
 
             _context.Entry(ticket).State = EntityState.Modified;
 
@@ -100,7 +113,7 @@ namespace Helpdesk.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TicketExists(id))
+                if (!TicketExists(ticketId))
                 {
                     return NotFound();
                 }

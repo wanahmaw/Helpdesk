@@ -1,18 +1,8 @@
 import Axios from "axios";
 import { authentication } from "./Authentication";
+import { History } from "history";
 
-// TODO: Remove? Not really used
-const getTicket = async (ticketId: number) => {
-  const url = `/api/ticket/${ticketId}`;
-  // Get snippet
-  const snippet = await Axios.get(url, {
-    headers: authentication.getAuthHeader()
-  });
-  // Return snippet
-  if (snippet) {
-    return snippet.data;
-  }
-};
+const onSuccess = "/dashboard";
 
 const getTicketsByRole = async () => {
   // Get user details
@@ -31,23 +21,79 @@ const getTicketsByRole = async () => {
   }
 };
 
-const deleteTicket = async (ticketId: number) => {
+const addTicket = (values: any, history: History) => {
+  // Get user detail
+  const ownerId = authentication.getUserId();
+  const url = "/api/ticket";
+  // Post to backend
+  Axios.post(
+    url,
+    {
+      title: values.title,
+      content: values.content,
+      ownerId
+    },
+    {
+      headers: authentication.getAuthHeader()
+    }
+  )
+    .then(data => {
+      // Back to homepage
+      if (data && data.status === 201) {
+        history.push(onSuccess);
+      }
+    })
+    .catch(err => console.log(err));
+};
+
+const updateTicket = (values: any, ticketId: number, history: History) => {
+  // Get user detail
+  const ownerId = authentication.getUserId();
+  const url = `/api/ticket/${ticketId}`;
+  // Update to backend
+  Axios.put(
+    url,
+    {
+      title: values.title,
+      content: values.content,
+      ownerId
+    },
+    {
+      headers: authentication.getAuthHeader()
+    }
+  )
+    .then(data => {
+      // Back to homepage
+      if (data && data.status === 204) {
+        history.push(onSuccess);
+      }
+    })
+    .catch(err => console.log(err));
+};
+
+const deleteTicket = (ticketId: number, history: History) => {
   // Get role
   const roleId = authentication.getUserRole();
   const url = `/api/ticket/${ticketId}`;
-  if (roleId == 2) {
+  // Delete if you're a team member
+  if (roleId === 2) {
     Axios.delete(url, {
       headers: authentication.getAuthHeader()
-    }).then(data => {
-      if (data && data.status == 200) {
-        return data;
-      }
-    });
+    })
+      .then(data => {
+        // Back to homepage
+        if (data && data.status === 200) {
+          console.log("deleteTicket successful, returning data");
+          history.push(onSuccess);
+        }
+      })
+      .catch(err => console.log(err));
   }
 };
 
 export const ticketing = {
-  getTicket,
   getTicketsByRole,
-  deleteTicket
+  deleteTicket,
+  addTicket,
+  updateTicket
 };

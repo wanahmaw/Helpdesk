@@ -14,7 +14,7 @@ class TicketPage extends Component<Props> {
   renderUpdateLink(ticket: any) {
     // Get user role
     const roleId = authentication.getUserRole();
-    if (roleId == 1 || 2) {
+    if (roleId === 1 || 2) {
       return (
         <Link
           to={{
@@ -33,7 +33,8 @@ class TicketPage extends Component<Props> {
   renderDeleteButton(ticket: any) {
     // Get user role
     const roleId = authentication.getUserRole();
-    if (roleId == 2) {
+    // Only show button for team members
+    if (roleId === 2) {
       return (
         <button
           style={{
@@ -45,12 +46,7 @@ class TicketPage extends Component<Props> {
           className="material-icons"
           onClick={e => {
             e.preventDefault();
-            ticketing
-              .deleteTicket(ticket.ticketId)
-              .then(() => {
-                this.props.history.push("/dashboard");
-              })
-              .catch(err => console.log(err));
+            ticketing.deleteTicket(ticket.ticketId, this.props.history);
           }}
         >
           clear
@@ -62,7 +58,7 @@ class TicketPage extends Component<Props> {
   render() {
     const { ticket } = this.props.location.state;
 
-    console.log("TicketPage's ticket state ->", ticket);
+    //console.log("TicketPage's ticket state ->", ticket);
 
     // TODO: verify user too
     if (typeof ticket !== "undefined" && ticket !== null) {

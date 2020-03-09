@@ -2,39 +2,36 @@ import React from "react";
 import { History } from "history";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { authentication } from "../../services/Authentication";
+import { ticketing } from "../../services/Ticketing";
 
 interface IProps {
   history: History;
 }
 
-const LoginForm = (props: IProps) => {
+const AddTicketForm = (props: IProps) => {
   // Pass the useFormik() HOC to setup the form
   const formik = useFormik({
     // Initial values
     initialValues: {
-      username: "",
-      password: ""
+      title: "",
+      content: ""
     },
 
     // Validate the form
     validationSchema: Yup.object({
-      username: Yup.string()
-        .max(50, "Must be 20 characters or less")
+      title: Yup.string()
+        .max(50, "Must be 50 characters or less")
         .required("Required"),
-      password: Yup.string()
-        .max(1000, "Must be 20 characters or less")
+      content: Yup.string()
+        .max(1000, "Must be 1000 characters or less")
         .required("Required")
     }),
 
     // Submit
     onSubmit: (values, actions) => {
-      authentication.login(values.username, values.password).then(user => {
-        if (user && user.token) {
-          props.history.push("/dashboard");
-        }
-      });
-
+      console.log("Adding ->", values);
+      ticketing.addTicket(values, props.history);
+      // Finalize form after submitting
       actions.setSubmitting(false);
       actions.resetForm({});
     }
@@ -46,16 +43,12 @@ const LoginForm = (props: IProps) => {
       <form className="col s12" onSubmit={formik.handleSubmit}>
         <div className="row">
           <div className="input-field col s12">
-            <input
-              id="username"
-              type="text"
-              {...formik.getFieldProps("username")}
-            />
-            <label htmlFor="username">Username</label>
-            {formik.touched.username && formik.errors.username ? (
+            <input id="title" type="text" {...formik.getFieldProps("title")} />
+            <label htmlFor="title">Title</label>
+            {formik.touched.title && formik.errors.title ? (
               <div>
                 <span className="red-text text-darken-2">
-                  {formik.errors.username}
+                  {formik.errors.title}
                 </span>
               </div>
             ) : null}
@@ -63,16 +56,16 @@ const LoginForm = (props: IProps) => {
         </div>
         <div className="row">
           <div className="input-field col s12">
-            <input
-              id="password"
-              type="text"
-              {...formik.getFieldProps("password")}
-            ></input>
-            <label htmlFor="password">Password</label>
-            {formik.touched.password && formik.errors.password ? (
+            <textarea
+              id="content"
+              className="materialize-textarea"
+              {...formik.getFieldProps("content")}
+            ></textarea>
+            <label htmlFor="title">Content</label>
+            {formik.touched.content && formik.errors.content ? (
               <div>
                 <span className="red-text text-darken-2">
-                  {formik.errors.password}
+                  {formik.errors.content}
                 </span>
               </div>
             ) : null}
@@ -97,4 +90,4 @@ const LoginForm = (props: IProps) => {
   );
 };
 
-export default LoginForm;
+export default AddTicketForm;
