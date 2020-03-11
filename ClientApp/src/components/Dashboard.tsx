@@ -54,7 +54,6 @@ export class Dashboard extends Component<Props, State> {
   render() {
     return (
       <div>
-        <h2>Help Desk</h2>
         <ul className="collection with-header">
           <li className="collection-header lighten-5 blue">
             <h3>Tickets</h3>

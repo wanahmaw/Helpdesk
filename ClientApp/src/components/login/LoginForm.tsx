@@ -30,7 +30,9 @@ const LoginForm = (props: IProps) => {
     // Submit
     onSubmit: (values, actions) => {
       authentication.login(values.username, values.password).then(user => {
+        console.log(user);
         if (user && user.token) {
+          console.log("about to push");
           props.history.push("/dashboard");
         }
       });
