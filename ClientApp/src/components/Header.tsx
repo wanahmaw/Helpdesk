@@ -16,13 +16,14 @@ class Header extends Component<{}, State> {
   }
 
   componentDidMount() {
-    console.log("Header mounted");
     const user = authentication.getCurrentUser();
     this.setState({
       user
     });
   }
 
+  // LOGOUT
+  // 1. Remove access token & redirect
   renderHeaderContent() {
     const user = this.state.user;
     if (user) {
@@ -32,7 +33,11 @@ class Header extends Component<{}, State> {
             {user.userName}
           </li>
           <li key="2">
-            <a style={{ fontSize: "large", fontWeight: "bold" }} href="#">
+            <a
+              style={{ fontSize: "large", fontWeight: "bold" }}
+              href="/#"
+              onClick={authentication.logout}
+            >
               Log Out
             </a>
           </li>

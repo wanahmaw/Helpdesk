@@ -52,7 +52,6 @@ const login = (username: string, password: string) => {
 // Logout user
 const logout = () => {
   sessionStorage.removeItem("user");
-  alert("removed user!");
 };
 
 // Get authorization header for authorized routes in back-end
