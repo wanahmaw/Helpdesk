@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@types/history": "^4.7.3",
-    "ajv": "^6.9.1",
+    "ajv": "^6.12.3",
     "cross-env": "^5.2.0",
     "typescript": "^3.7.5"
   },
